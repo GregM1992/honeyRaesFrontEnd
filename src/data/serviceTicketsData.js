@@ -1,7 +1,24 @@
-const _apiUrl = "/api/servicetickets";
+const serviceTicketsUrl = "/api/servicetickets";
 
 export const getServiceTickets = () => {
-  return fetch(_apiUrl).then((r) => r.json());
+  return fetch(serviceTicketsUrl).then((r) => r.json());
 };
 
-//export a function here that gets a ticket by id
+export const getServiceTicketsById = (ticketId) => {
+  return fetch(`${serviceTicketsUrl}/${ticketId}`).then((r) => r.json());
+};
+ 
+export const createServiceTicket = (payload) => new Promise((resolve, reject) => {
+  fetch(serviceTicketsUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      resolve(data);
+    })
+    .catch(reject);
+});
