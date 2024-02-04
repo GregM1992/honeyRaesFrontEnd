@@ -22,3 +22,15 @@ export const createServiceTicket = (payload) => new Promise((resolve, reject) =>
     })
     .catch(reject);
 });
+
+export const deleteServiceTicket = (id) => new Promise((resolve, reject) => {
+  fetch(`${serviceTicketsUrl}/${id}`,{
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then((response) => response.json())
+  .then((data) => resolve(data))
+  .catch(reject);
+});
