@@ -1,14 +1,33 @@
 import { useEffect, useState } from "react";
-import { Table } from "reactstrap";
-import { getServiceTickets } from "../../data/serviceTicketsData";
+import { Table, Button} from "reactstrap";
+import { deleteServiceTicket, getServiceTickets } from "../../data/serviceTicketsData";
 import { Link } from "react-router-dom";
+
 
 export default function TicketsList() {
   const [tickets, setTickets] = useState([]);
 
+  
+  
   useEffect(() => {
     getServiceTickets().then(setTickets);
-  }, []);
+  }, [tickets]);
+  
+  const handleDelete = (id) => {
+    const isConfirmed = window.confirm("Delete this ticket?");
+    if (!isConfirmed) {
+      return;
+    }
+
+    deleteServiceTicket(id)
+      .then(() => {
+        setTickets((prevTickets) => prevTickets.filter((ticket) => ticket.id !== id));
+      })
+      .catch((error) => {
+        console.error("Could not delete ticket:", error);
+      });
+  };
+ 
 
   return (
     <Table>
@@ -30,6 +49,11 @@ export default function TicketsList() {
             <td>{t.dateCompleted?.split("T")[0] || "Incomplete"}</td>
             <td>
               <Link to={`${t.id}`}>Details</Link>
+            </td>
+            <td>
+              <Button color="danger" id="delete" onClick={() => handleDelete(t.id)}>
+                Delete
+              </Button>{" "}
             </td>
           </tr>
         ))}
