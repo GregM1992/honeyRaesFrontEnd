@@ -18,6 +18,7 @@ const initialState = {
   id: 0,
   employeeId: 0,
   customerId: 0,
+  isComplete: false,
 }
 
 export default function CreateTicket() {
@@ -124,6 +125,7 @@ CreateTicket.propTypes = {
     EmployeeId: PropTypes.number,
     Description: PropTypes.string,
     Emergency: PropTypes.bool,
+    isComplete: PropTypes.bool
   })
 };
 
