@@ -34,3 +34,18 @@ export const deleteServiceTicket = (id) => new Promise((resolve, reject) => {
   .then((data) => resolve(data))
   .catch(reject);
 });
+
+
+export const completeTicket = (id) => new Promise ((resolve, reject) => {
+fetch(`${serviceTicketsUrl}/${id}/complete`, {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    resolve(data);
+  })
+  .catch(reject);
+});

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Table, Button} from "reactstrap";
-import { deleteServiceTicket, getServiceTickets } from "../../data/serviceTicketsData";
+import { completeTicket, deleteServiceTicket, getServiceTickets } from "../../data/serviceTicketsData";
 import { Link } from "react-router-dom";
 
 
@@ -11,20 +11,37 @@ export default function TicketsList() {
   
   useEffect(() => {
     getServiceTickets().then(setTickets);
-  }, [tickets]);
+  }, [tickets.isComplete, tickets]);
   
   const handleDelete = (id) => {
     const isConfirmed = window.confirm("Delete this ticket?");
     if (!isConfirmed) {
       return;
     }
-
     deleteServiceTicket(id)
       .then(() => {
         setTickets((prevTickets) => prevTickets.filter((ticket) => ticket.id !== id));
       })
       .catch((error) => {
         console.error("Could not delete ticket:", error);
+      });
+  };
+
+  const handleComplete = (id) => {
+      const isConfirmed = window.confirm("Complete this ticket?");
+      if (!isConfirmed) {
+        return;
+      }
+      completeTicket(id)
+      .then(() => {
+        setTickets((prevTickets) =>
+          prevTickets.map((ticket) =>
+            ticket.id === id ? { ...ticket, isComplete: true } : ticket
+          )
+        );
+      }).then(console.warn(tickets))
+      .catch((error) => {
+        console.error("Error completing service ticket:", error);
       });
   };
  
@@ -51,10 +68,12 @@ export default function TicketsList() {
               <Link to={`${t.id}`}>Details</Link>
             </td>
             <td>
-              <Button color="danger" id="delete" onClick={() => handleDelete(t.id)}>
+              <Button color="danger" onClick={() => handleDelete(t.id)}>
                 Delete
               </Button>{" "}
             </td>
+              <td>{!t.isComplete? <Button color="success" onClick={() => handleComplete(t.id)}> Complete </Button> : <p></p>}
+              </td>
           </tr>
         ))}
       </tbody>
